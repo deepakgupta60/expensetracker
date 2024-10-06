@@ -1,8 +1,13 @@
 import React, { Fragment, useEffect, useState } from 'react'
 import ReactModal from "react-modal";
 import { enqueueSnackbar } from 'notistack';
+import ExpenseCategoryChart from './ExpenseCategoryChart';
+import TrendingSpends from './TrendingSpends';
+
 
 ReactModal.setAppElement("#root")
+
+
 
 const ExpenseForm = () => {
     const [expenseData, setExpenseData] = useState(()=>{
@@ -10,25 +15,16 @@ const ExpenseForm = () => {
         return savedExpense ? JSON.parse(savedExpense): [];
     });
     const [modelIsOpen, setModelIsOpen] = useState(false); // for add model
-
     const [title, setTitle] = useState("");
     const [amount, setAmount] = useState("");
     const [date, setDate] = useState("");
     const [category, setCategory] = useState("Entertainment");
-
     const [isEditing, setIsEditing] = useState(false); //  for edit model
-
     const [editIndex, setEditIndex] = useState(null); // for assigning index value on it
-
-    // console.log("checking balance:",walletBalance)
-
     const [walletBalance, setWalletBalance]=useState(()=>{
        let savedBalance= JSON.parse(localStorage.getItem('wallet'))
        return savedBalance ? savedBalance : [];
     })
-
-
-
     const totalBalance = walletBalance.reduce((acc,cur)=>acc+cur,0);
 
     //  JSON.parse(localStorage.getItem('wallet'))
@@ -92,8 +88,7 @@ const ExpenseForm = () => {
         // console.log("Unique ID: ",uniqueId)
 
 
-        handleClose()
-
+        handleClose();
         const newBalance = walletBalance.map((balance)=>balance-expenseAmount);
         setWalletBalance(newBalance);
 
@@ -155,6 +150,13 @@ const ExpenseForm = () => {
             </ReactModal>
 
             <button onClick={handleOpen}>Add Expense</button>
+
+
+
+
+<TrendingSpends expenseData={expenseData}/>
+<ExpenseCategoryChart expenseData={expenseData}/>
+
 
             <p>Expense Data added</p>
             {
