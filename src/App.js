@@ -3,6 +3,7 @@ import { SnackbarProvider } from 'notistack';
 import './App.css';
 import ExpenseForm from './ExpenseForm';
 import ExpenseView from './ExpenseView';
+import AddWalletBalance from './AddWalletBalance';
 
 
 
@@ -12,7 +13,7 @@ function App() {
       <SnackbarProvider/>
       <ExpenseForm/>
       <ExpenseView/>
-
+      <AddWalletBalance/>
     </div>
   );
 }
