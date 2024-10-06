@@ -63,12 +63,18 @@ const ExpenseForm = () => {
     },[expenseData])
 
     const handleAddExpense = () => {
+        
+        const expenseAmount = parseFloat(amount);
+        
         console.log(`${title} ${amount} ${date} ${category}`);
 
-       
+       if(expenseAmount>totalBalance)
+       {
+        enqueueSnackbar("you don't have enough balance to add this expense", {variant:"error"})
+       }
 
         const uniqueId = Date.now();
-        const newExpense = { id: uniqueId, title, amount, date, category };
+        const newExpense = { id: uniqueId, title, amount:expenseAmount, date, category };
 
         if (isEditing && editIndex != null) {
             // updated data 
@@ -87,6 +93,10 @@ const ExpenseForm = () => {
 
 
         handleClose()
+
+        const newBalance = walletBalance.map((balance)=>balance-expenseAmount);
+        setWalletBalance(newBalance);
+
     }
 
 
@@ -121,6 +131,7 @@ const ExpenseForm = () => {
         setExpenseData(filteredData)
         enqueueSnackbar("deleted expense")
     }
+
 
     return (
         <>
