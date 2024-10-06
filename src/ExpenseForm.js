@@ -1,23 +1,55 @@
-import React, { Fragment, useState } from 'react'
+import React, { Fragment, useEffect, useState } from 'react'
 import ReactModal from "react-modal";
-
+import { enqueueSnackbar } from 'notistack';
 
 ReactModal.setAppElement("#root")
 
 const ExpenseForm = () => {
-    const [expenseData, setExpenseData] = useState([]);
+    const [expenseData, setExpenseData] = useState(()=>{
+        const savedExpense = localStorage.getItem("expenses")
+        return savedExpense ? JSON.parse(savedExpense): [];
+    });
     const [modelIsOpen, setModelIsOpen] = useState(false); // for add model
 
 
     const [title, setTitle] = useState("");
     const [amount, setAmount] = useState("");
     const [date, setDate] = useState("");
-    const [category, setCategory] = useState("");
+    const [category, setCategory] = useState("Entertainment");
 
     const [isEditing, setIsEditing] = useState(false); //  for edit model
 
     const [editIndex, setEditIndex] = useState(null); // for assigning index value on it
 
+
+
+
+    // for first time load
+    useEffect(()=>{
+
+        try{
+            const savedExpenses = localStorage.getItem('expenses');
+            if(savedExpenses)
+                {
+                    setExpenseData(JSON.parse(savedExpenses));
+                    console.log("My Data load: ", savedExpenses)
+                }
+        }
+        catch(err)
+        {
+            console.error(err)
+        }
+       
+
+        
+    },[])
+
+
+
+    // update my expense
+    useEffect(()=>{
+        localStorage.setItem('expenses',JSON.stringify(expenseData))
+    },[expenseData])
 
     const handleAddExpense = () => {
         console.log(`${title} ${amount} ${date} ${category}`);
@@ -30,11 +62,12 @@ const ExpenseForm = () => {
             const updatedData = expenseData.map((expense) => expense.id === editIndex ? newExpense : expense)
             // update the data to state
             setExpenseData(updatedData)
-
+            enqueueSnackbar("updated expense")
         }
         else {
 
             setExpenseData([...expenseData, newExpense]);
+            enqueueSnackbar("added expense")
         }
 
         // console.log("Unique ID: ",uniqueId)
@@ -65,13 +98,15 @@ const ExpenseForm = () => {
         setTitle("")
         setAmount("")
         setDate("")
-        setCategory("")
+        setCategory("Entertainment")
+        setEditIndex(null)
 
     }
 
     const handleDelete = (id) => {
         const filteredData = expenseData.filter((expense)=>expense.id!==id)
         setExpenseData(filteredData)
+        enqueueSnackbar("deleted expense")
     }
 
     return (
