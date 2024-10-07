@@ -1,8 +1,9 @@
-import React, { Fragment, useEffect, useState } from 'react'
+import React, { Fragment, useContext, useEffect, useState } from 'react'
 import ReactModal from "react-modal";
 import { enqueueSnackbar } from 'notistack';
 import ExpenseCategoryChart from './ExpenseCategoryChart';
 import TrendingSpends from './TrendingSpends';
+import { ExpenseContext } from './App';
 
 
 ReactModal.setAppElement("#root")
@@ -27,6 +28,10 @@ const ExpenseForm = () => {
     })
     const totalBalance = walletBalance.reduce((acc,cur)=>acc+cur,0);
 
+  
+    const {expenseDatas, setExpenseDatas}=useContext(ExpenseContext);
+
+  
     //  JSON.parse(localStorage.getItem('wallet'))
 
 
@@ -87,13 +92,15 @@ const ExpenseForm = () => {
 
         // console.log("Unique ID: ",uniqueId)
 
-
+        setExpenseDatas([...expenseDatas, expenseData])
         handleClose();
         const newBalance = walletBalance.map((balance)=>balance-expenseAmount);
         setWalletBalance(newBalance);
 
     }
 
+
+    
 
     const handleEditExpense = (idx) => {
         const expenseToEdit = expenseData.find((expense) => expense.id === idx)
@@ -127,7 +134,8 @@ const ExpenseForm = () => {
         enqueueSnackbar("deleted expense")
     }
 
-
+    const totalExpense = expenseData.reduce((acc, curr)=>acc+curr.amount,0);
+    console.log(totalExpense,"total expense")
     return (
         <>
 
@@ -150,6 +158,8 @@ const ExpenseForm = () => {
             </ReactModal>
 
             <button onClick={handleOpen}>Add Expense</button>
+
+
 
 
 
